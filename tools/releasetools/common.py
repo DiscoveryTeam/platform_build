@@ -460,8 +460,9 @@ def _BuildBootableImage(sourcedir, fs_config_file, info_dict=None,
     for argument in open(fn).read().rstrip("\n").split(" "):
       cmd.append(argument)
     cmd.append("-d")
-    cmd.append(os.path.join(sourcedir, "kernel") + ":" + ramdisk_img.name)
+    cmd.append(os.path.join(sourcedir, "kernel")+":"+ramdisk_img.name)
     cmd.append(img.name)
+
   else:
     # use MKBOOTIMG from environ, or "mkbootimg" if empty or not set
     mkbootimg = os.getenv('MKBOOTIMG') or "mkbootimg"
@@ -488,26 +489,20 @@ def _BuildBootableImage(sourcedir, fs_config_file, info_dict=None,
       cmd.append("--tags-addr")
       cmd.append(open(fn).read().rstrip("\n"))
 
-    fn = os.path.join(sourcedir, "tags_offset")
-    if os.access(fn, os.F_OK):
-      cmd.append("--tags_offset")
-      cmd.append(open(fn).read().rstrip("\n"))
-
     fn = os.path.join(sourcedir, "ramdisk_offset")
     if os.access(fn, os.F_OK):
       cmd.append("--ramdisk_offset")
       cmd.append(open(fn).read().rstrip("\n"))
 
-    fn = os.path.join(sourcedir, "dt")
+    fn = os.path.join(sourcedir, "dt_args")
     if os.access(fn, os.F_OK):
       cmd.append("--dt")
-      cmd.append(fn)
+      cmd.append(open(fn).read().rstrip("\n"))
 
     fn = os.path.join(sourcedir, "pagesize")
     if os.access(fn, os.F_OK):
-      kernel_pagesize = open(fn).read().rstrip("\n")
       cmd.append("--pagesize")
-      cmd.append(kernel_pagesize)
+      cmd.append(open(fn).read().rstrip("\n"))
 
     args = info_dict.get("mkbootimg_args", None)
     if args and args.strip():
