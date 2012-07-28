@@ -555,8 +555,6 @@ INTERNAL_MKBOOTIMG_VERSION_ARGS := \
     --os_version $(PLATFORM_VERSION) \
     --os_patch_level $(PLATFORM_SECURITY_PATCH)
 
-INSTALLED_DTIMAGE_TARGET := $(PRODUCT_OUT)/dt.img
-
 ifeq ($(strip $(BOARD_KERNEL_SEPARATED_DT)),true)
   INTERNAL_BOOTIMAGE_ARGS += --dt $(INSTALLED_DTIMAGE_TARGET)
   BOOTIMAGE_EXTRA_DEPS    := $(INSTALLED_DTIMAGE_TARGET)
@@ -1168,22 +1166,8 @@ $(recovery_uncompressed_ramdisk): $(MKBOOTFS) \
 		$(INSTALLED_2NDBOOTLOADER_TARGET) \
 		$(recovery_build_prop) $(recovery_resource_deps) $(recovery_root_deps) \
 		$(recovery_fstab) \
-		$(RECOVERY_INSTALL_OTA_KEYS)
-	$(call build-recoveryramdisk)
-	@echo "----- Making uncompressed recovery ramdisk ------"
-	$(hide) $(MKBOOTFS) $(TARGET_RECOVERY_ROOT_OUT) > $@
-
-$(recovery_ramdisk): $(MINIGZIP) \
-		$(recovery_uncompressed_ramdisk)
-	@echo "----- Making compressed recovery ramdisk ------"
-	$(hide) $(MINIGZIP) < $(recovery_uncompressed_ramdisk) > $@
-
-ifndef BOARD_CUSTOM_BOOTIMG_MK
-$(INSTALLED_RECOVERYIMAGE_TARGET): $(MKBOOTIMG) $(recovery_ramdisk) $(recovery_kernel) \
-		$(RECOVERYIMAGE_EXTRA_DEPS)
-	@echo "----- Making recovery image ------"
-	$(call build-recoveryimage-target, $@)
-endif # BOARD_CUSTOM_BOOTIMG_MK
+		$(RECOVERY_INSTALL_OTA_KEYS) $(RECOVERYIMAGE_EXTRA_DEPS)
+		$(call build-recoveryimage-target, $@)
 
 ifdef RECOVERY_RESOURCE_ZIP
 $(RECOVERY_RESOURCE_ZIP): $(INSTALLED_RECOVERYIMAGE_TARGET) | $(ZIPTIME)
