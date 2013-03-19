@@ -2299,4 +2299,6 @@ check_bash_version && {
     fi
 }
 
+addcompletions
+
 export ANDROID_BUILD_TOP=$(gettop)
