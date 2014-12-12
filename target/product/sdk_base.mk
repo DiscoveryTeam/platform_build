@@ -18,7 +18,6 @@ PRODUCT_PROPERTY_OVERRIDES :=
 
 PRODUCT_PACKAGES := \
 	ApiDemos \
-	CubeLiveWallpapers \
 	CustomLocale \
 	Development \
 	Dialer \
@@ -29,7 +28,6 @@ PRODUCT_PACKAGES := \
 	LegacyCamera \
 	librs_jni \
 	LiveWallpapersPicker \
-	Mms \
 	rild \
 	SdkSetup \
 	SmokeTest \
