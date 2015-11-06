@@ -135,9 +135,9 @@ class EdifyGenerator(object):
     cmd = ('assert(' +
            ' || '.join(['getprop("ro.product.device") == "%s" || getprop("ro.build.product") == "%s"'
                          % (i, i) for i in device.split(",")]) +
-           ' || abort("E%d: This package is for device: %s; ' +
+           ' || abort("This package is for device: %s; ' +
            'this device is " + getprop("ro.product.device") + ".");' +
-           ');') % (common.ErrorCode.DEVICE_MISMATCH, device)
+           ');') % device
     self.script.append(cmd)
 
   def AssertSomeBootloader(self, *bootloaders):
