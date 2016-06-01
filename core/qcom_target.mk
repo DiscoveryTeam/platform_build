@@ -32,7 +32,7 @@ ifeq ($(BOARD_USES_QCOM_HARDWARE),true)
     # Tell HALs that we're compiling an AOSP build with an in-line kernel
     TARGET_COMPILE_WITH_MSM_KERNEL := true
 
-    ifneq ($(filter msm7x27a msm7x30 msm8660 msm8960,$(TARGET_BOARD_PLATFORM)),)
+    ifneq ($(filter msm7x30 msm8660 msm8960,$(TARGET_BOARD_PLATFORM)),)
         # Enable legacy graphics functions
         qcom_flags += -DQCOM_BSP_LEGACY
         # Enable legacy audio functions
@@ -65,14 +65,10 @@ ifeq ($(BOARD_USES_QCOM_HARDWARE),true)
         ifneq ($(filter msm8909 msm8916,$(TARGET_BOARD_PLATFORM)),)
             QCOM_HARDWARE_VARIANT := msm8916
         else
-        ifneq ($(filter msm8953 msm8937,$(TARGET_BOARD_PLATFORM)),)
-            QCOM_HARDWARE_VARIANT := msm8937
-        else
         ifneq ($(filter msm8992 msm8994,$(TARGET_BOARD_PLATFORM)),)
             QCOM_HARDWARE_VARIANT := msm8994
         else
             QCOM_HARDWARE_VARIANT := $(TARGET_BOARD_PLATFORM)
-        endif
         endif
         endif
         endif
@@ -110,8 +106,8 @@ $(call set-device-specific-path,LOC_API,loc-api,vendor/qcom/opensource/location)
 $(call set-device-specific-path,DATASERVICES,dataservices,vendor/qcom/opensource/dataservices)
 
 $(call ril-set-path-variant,ril)
-$(call wlan-set-path-variant,wlan-caf)
-$(call bt-vendor-set-path-variant,bt-caf)
+$(call wlan-set-path-variant,wlan)
+$(call bt-vendor-set-path-variant,bt)
 endif # AOSP_VARIANT_MAKEFILE
 
 else
