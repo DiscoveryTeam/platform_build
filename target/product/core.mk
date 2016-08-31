@@ -24,7 +24,6 @@ PRODUCT_PACKAGES += \
     BasicDreams \
     BlockedNumberProvider \
     BookmarkProvider \
-    Browser \
     Contacts \
     Calendar \
     CalendarProvider \
@@ -38,6 +37,7 @@ PRODUCT_PACKAGES += \
     InputDevices \
     KeyChain \
     Keyguard \
+    LatinIME \
     Launcher3 \
     ManagedProvisioning \
     MtpDocumentsProvider \
