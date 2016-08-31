@@ -138,6 +138,13 @@ Usage:  ota_from_target_files [flags] input_target_files output_ota_package
 
   --payload_signer_args <args>
       Specify the arguments needed for payload signer.
+
+  --backup <boolean>
+      Enable or disable the execution of backuptool.sh.
+      Disabled by default.
+
+  --override_device <device>
+      Override device-specific asserts. Can be a comma-separated list.
 """
 
 from __future__ import print_function
@@ -193,6 +200,7 @@ OPTIONS.override_device = 'auto'
 OPTIONS.override_prop = False
 OPTIONS.payload_signer = None
 OPTIONS.payload_signer_args = []
+OPTIONS.backuptool = True
 
 def MostPopularKey(d, default):
   """Given a dict, return the key corresponding to the largest
@@ -2033,6 +2041,10 @@ def main(argv):
       OPTIONS.updater_binary = a
     elif o in ("--no_fallback_to_full",):
       OPTIONS.fallback_to_full = False
+    elif o in ("--backup"):
+      OPTIONS.backuptool = bool(a.lower() == 'true')
+    elif o in ("--override_device"):
+      OPTIONS.override_device = a
     elif o == "--stash_threshold":
       try:
         OPTIONS.stash_threshold = float(a)
@@ -2086,8 +2098,8 @@ def main(argv):
                                  "override_device=",
                                  "override_prop=",
                                  "payload_signer=",
-                                 "payload_signer_args="
-                             ], extra_option_handler=option_handler)
+                                 "payload_signer_args=",
+                                 "override_device="], extra_option_handler=option_handler)
 
   if len(args) != 2:
     common.Usage(__doc__)
