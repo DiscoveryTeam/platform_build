@@ -28,8 +28,6 @@ PRODUCT_PACKAGES += \
     CalendarProvider \
     CaptivePortalLogin \
     CertInstaller \
-    Contacts \
-    DeskClock \
     DocumentsUI \
     DownloadProviderUi \
     ExactCalculator \
@@ -41,7 +39,6 @@ PRODUCT_PACKAGES += \
     Launcher3 \
     ManagedProvisioning \
     MtpDocumentsProvider \
-    PicoTts \
     PacProcessor \
     libpac \
     PrintSpooler \
