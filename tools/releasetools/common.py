@@ -275,9 +275,13 @@ def LoadInfoDict(input_file, input_dir=None):
   makeint("boot_size")
   makeint("fstab_version")
 
-  if d.get("no_recovery", False) == "true":
-    d["fstab"] = None
-  else:
+  system_root_image = d.get("system_root_image", None) == "true"
+  if d.get("no_recovery", None) != "true":
+    recovery_fstab_path = "RECOVERY/RAMDISK/etc/recovery.fstab"
+    d["fstab"] = LoadRecoveryFSTab(read_helper, d["fstab_version"],
+        recovery_fstab_path, system_root_image)
+  elif d.get("recovery_as_boot", None) == "true":
+    recovery_fstab_path = "BOOT/RAMDISK/etc/recovery.fstab"
     d["fstab"] = LoadRecoveryFSTab(read_helper, d["fstab_version"],
                                    d["device_type"], d.get("system_root_image", False))
   d["build.prop"] = LoadBuildProp(read_helper)
@@ -313,9 +317,9 @@ def LoadRecoveryFSTab(read_helper, fstab_version, type, system_root_image=False)
       self.context = context
 
   try:
-    data = read_helper("RECOVERY/RAMDISK/etc/recovery.fstab")
+    data = read_helper(recovery_fstab_path)
   except KeyError:
-    print("Warning: could not find RECOVERY/RAMDISK/etc/recovery.fstab")
+    print "Warning: could not find {}".format(recovery_fstab_path)
     data = ""
 
   if fstab_version == 1:
