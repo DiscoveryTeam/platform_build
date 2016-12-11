@@ -1092,6 +1092,36 @@ endef
 RECOVERYIMAGE_ID_FILE := $(PRODUCT_OUT)/recovery.id
 # $(1): output file
 define build-recoveryimage-target
+  @echo -e ${CL_CYN}"----- Making recovery image ------"${CL_RST}
+  $(hide) mkdir -p $(TARGET_RECOVERY_OUT)
+  $(hide) mkdir -p $(TARGET_RECOVERY_ROOT_OUT)/etc $(TARGET_RECOVERY_ROOT_OUT)/sdcard $(TARGET_RECOVERY_ROOT_OUT)/tmp
+  @echo Copying baseline ramdisk...
+  $(hide) rsync -a --exclude=etc --exclude=sdcard $(IGNORE_CACHE_LINK) $(TARGET_ROOT_OUT) $(TARGET_RECOVERY_OUT) # "cp -Rf" fails to overwrite broken symlinks on Mac.
+  @echo Modifying ramdisk contents...
+  $(hide) rm -f $(TARGET_RECOVERY_ROOT_OUT)/init*.rc
+  $(hide) cp -f $(recovery_initrc) $(TARGET_RECOVERY_ROOT_OUT)/
+  $(hide) rm -f $(TARGET_RECOVERY_ROOT_OUT)/sepolicy
+  $(hide) cp -f $(recovery_sepolicy) $(TARGET_RECOVERY_ROOT_OUT)/sepolicy
+  $(hide) cp $(TARGET_ROOT_OUT)/init.recovery.*.rc $(TARGET_RECOVERY_ROOT_OUT)/ || true # Ignore error when the src file doesn't exist.
+  $(hide) mkdir -p $(TARGET_RECOVERY_ROOT_OUT)/res
+  $(hide) rm -rf $(TARGET_RECOVERY_ROOT_OUT)/res/*
+  $(hide) cp -rf $(recovery_resources_common)/* $(TARGET_RECOVERY_ROOT_OUT)/res
+  $(hide) cp -f $(recovery_font) $(TARGET_RECOVERY_ROOT_OUT)/res/images/font.png
+  $(hide) $(foreach item,$(TARGET_PRIVATE_RES_DIRS), \
+    cp -rf $(item) $(TARGET_RECOVERY_ROOT_OUT)/$(newline))
+  $(hide) $(foreach item,$(recovery_fstab), \
+    cp -f $(item) $(TARGET_RECOVERY_ROOT_OUT)/etc/recovery.fstab)
+  $(if $(strip $(recovery_wipe)), \
+    $(hide) cp -f $(recovery_wipe) $(TARGET_RECOVERY_ROOT_OUT)/etc/recovery.wipe)
+  $(hide) cp $(RECOVERY_INSTALL_OTA_KEYS) $(TARGET_RECOVERY_ROOT_OUT)/res/keys
+  $(hide) cat $(INSTALLED_DEFAULT_PROP_TARGET) $(recovery_build_prop) \
+          > $(TARGET_RECOVERY_ROOT_OUT)/default.prop
+  $(BOARD_RECOVERY_IMAGE_PREPARE)
+  $(if $(filter true,$(BOARD_BUILD_SYSTEM_ROOT_IMAGE)), \
+    $(hide) mkdir -p $(TARGET_RECOVERY_ROOT_OUT)/system_root; \
+            rm -rf $(TARGET_RECOVERY_ROOT_OUT)/system; \
+            ln -sf /system_root/system $(TARGET_RECOVERY_ROOT_OUT)/system) # Mount the system_root_image to /system_root and symlink /system.
+  $(hide) $(MKBOOTFS) -d $(TARGET_OUT) $(TARGET_RECOVERY_ROOT_OUT) | $(MINIGZIP) > $(recovery_ramdisk)
   $(if $(filter true,$(PRODUCTS.$(INTERNAL_PRODUCT).PRODUCT_SUPPORTS_VBOOT)), \
     $(hide) $(MKBOOTIMG) $(INTERNAL_RECOVERYIMAGE_ARGS) $(INTERNAL_MKBOOTIMG_VERSION_ARGS) $(BOARD_MKBOOTIMG_ARGS) --output $(1).unsigned, \
     $(hide) $(MKBOOTIMG) $(INTERNAL_RECOVERYIMAGE_ARGS) $(INTERNAL_MKBOOTIMG_VERSION_ARGS) $(BOARD_MKBOOTIMG_ARGS) --output $(1) --id > $(RECOVERYIMAGE_ID_FILE))
@@ -1106,7 +1136,7 @@ define build-recoveryimage-target
   $(if $(filter true,$(BOARD_USES_RECOVERY_AS_BOOT)), \
     $(hide) $(call assert-max-image-size,$(1),$(BOARD_BOOTIMAGE_PARTITION_SIZE)), \
     $(hide) $(call assert-max-image-size,$(1),$(BOARD_RECOVERYIMAGE_PARTITION_SIZE)))
-  @echo "Made recovery image: $@"
+  @echo -e ${CL_CYN}"Made recovery image: $@"${CL_RST}
 endef
 
 ifeq ($(BOARD_USES_RECOVERY_AS_BOOT),true)
@@ -1590,7 +1620,6 @@ IGNORE_CACHE_LINK := --exclude=cache
 endif # BOARD_CACHEIMAGE_FILE_SYSTEM_TYPE
 
 
-# -----------------------------------------------------------------
 # system_other partition image
 ifeq ($(BOARD_USES_SYSTEM_OTHER_ODEX),true)
 BOARD_USES_SYSTEM_OTHER := true

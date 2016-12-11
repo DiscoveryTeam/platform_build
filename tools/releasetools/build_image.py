@@ -16,9 +16,7 @@
 
 """
 Build image output_image_file from input_directory and properties_file.
-
 Usage:  build_image input_directory properties_file output_image_file
-
 """
 
 from __future__ import print_function
@@ -45,7 +43,6 @@ BLOCK_SIZE = 4096
 
 def RunCommand(cmd):
   """Echo and run the given command.
-
   Args:
     cmd: the command represented as a list of strings.
   Returns:
@@ -111,7 +108,6 @@ def ZeroPadSimg(image_file, pad_size):
 
 def AdjustPartitionSizeForVerity(partition_size, fec_supported):
   """Modifies the provided partition size to account for the verity metadata.
-
   This information is used to size the created image appropriately.
   Args:
     partition_size: the size of the partition to be verified.
@@ -201,7 +197,6 @@ def BuildVerityMetadata(image_size, verity_metadata_path, root_hash, salt,
 
 def Append2Simg(sparse_image_path, unsparse_image_path, error_message):
   """Appends the unsparse image to the given sparse image.
-
   Args:
     sparse_image_path: the path to the (sparse) image
     unsparse_image_path: the path to the (unsparse) image
@@ -265,7 +260,6 @@ def UnsparseImage(sparse_image_path, replace=True):
 
 def MakeVerityEnabledImage(out_file, fec_supported, prop_dict):
   """Creates an image that is verifiable using dm-verity.
-
   Args:
     out_file: the location to write the verifiable image at
     prop_dict: a dictionary of properties required for image creation and
@@ -330,13 +324,11 @@ def ConvertBlockMapToBaseFs(block_map_file):
 
 def BuildImage(in_dir, prop_dict, out_file, target_out=None):
   """Build an image to out_file from in_dir with property prop_dict.
-
   Args:
     in_dir: path of input directory.
     prop_dict: property dictionary.
     out_file: path of the output image file.
     target_out: path of the product out directory to read device specific FS config files.
-
   Returns:
     True iff the image is built successfully.
   """
@@ -545,7 +537,6 @@ def BuildImage(in_dir, prop_dict, out_file, target_out=None):
 
 def ImagePropFromGlobalDict(glob_dict, mount_point):
   """Build an image property dictionary from the global dictionary.
-
   Args:
     glob_dict: the global dictionary from the build system.
     mount_point: such as "system", "data" etc.

@@ -1,3 +1,4 @@
+
 # Copyright (C) 2008 The Android Open Source Project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -89,7 +90,6 @@ SPECIAL_CERT_STRINGS = ("PRESIGNED", "EXTERNAL")
 class ErrorCode(object):
   """Define error_codes for failures that happen during the actual
   update package installation.
-
   Error codes 0-999 are reserved for failures before the package
   installation (i.e. low battery, package verification failure).
   Detailed code in 'bootable/recovery/error_code.h' """
@@ -275,13 +275,9 @@ def LoadInfoDict(input_file, input_dir=None):
   makeint("boot_size")
   makeint("fstab_version")
 
-  system_root_image = d.get("system_root_image", None) == "true"
-  if d.get("no_recovery", None) != "true":
-    recovery_fstab_path = "RECOVERY/RAMDISK/etc/recovery.fstab"
-    d["fstab"] = LoadRecoveryFSTab(read_helper, d["fstab_version"],
-        recovery_fstab_path, system_root_image)
-  elif d.get("recovery_as_boot", None) == "true":
-    recovery_fstab_path = "BOOT/RAMDISK/etc/recovery.fstab"
+  if d.get("no_recovery", False) == "true":
+    d["fstab"] = None
+  else:
     d["fstab"] = LoadRecoveryFSTab(read_helper, d["fstab_version"],
                                    d["device_type"], d.get("system_root_image", False))
   d["build.prop"] = LoadBuildProp(read_helper)
@@ -317,9 +313,9 @@ def LoadRecoveryFSTab(read_helper, fstab_version, type, system_root_image=False)
       self.context = context
 
   try:
-    data = read_helper(recovery_fstab_path)
+    data = read_helper("RECOVERY/RAMDISK/etc/recovery.fstab")
   except KeyError:
-    print "Warning: could not find {}".format(recovery_fstab_path)
+    print("Warning: could not find RECOVERY/RAMDISK/etc/recovery.fstab")
     data = ""
 
   if fstab_version == 1:
@@ -417,7 +413,6 @@ def DumpInfoDict(d):
 def _BuildBootableImage(sourcedir, fs_config_file, info_dict=None,
                         has_ramdisk=False):
   """Build a bootable image from the specified sourcedir.
-
   Take a kernel, cmdline, and optionally a ramdisk directory from the input (in
   'sourcedir'), and turn them into a boot image.  Return the image data, or
   None if sourcedir does not appear to contains files for building the
@@ -637,7 +632,6 @@ def _BuildBootableImage(sourcedir, fs_config_file, info_dict=None,
 def GetBootableImage(name, prebuilt_name, unpack_dir, tree_subdir,
                      info_dict=None):
   """Return a File object with the desired bootable image.
-
   Look for it in 'unpack_dir'/BOOTABLE_IMAGES under the name 'prebuilt_name',
   otherwise look for it under 'unpack_dir'/IMAGES, otherwise construct it from
   the source files in 'unpack_dir'/'tree_subdir'."""
@@ -675,10 +669,8 @@ def GetBootableImage(name, prebuilt_name, unpack_dir, tree_subdir,
 
 def UnzipTemp(filename, pattern=None):
   """Unzip the given archive into a temporary directory and return the name.
-
   If filename is of the form "foo.zip+bar.zip", unzip foo.zip into a
   temp dir, then unzip bar.zip into that_dir/BOOTABLE_IMAGES.
-
   Returns (tempdir, zipobj) where zipobj is a zipfile.ZipFile (of the
   main file), open for reading.
   """
@@ -800,15 +792,12 @@ def SignFile(input_name, output_name, key, password, min_api_level=None,
   """Sign the input_name zip/jar/apk, producing output_name.  Use the
   given key and password (the latter may be None if the key does not
   have a password.
-
   If whole_file is true, use the "-w" option to SignApk to embed a
   signature that covers the whole file in the archive comment of the
   zip file.
-
   min_api_level is the API Level (int) of the oldest platform this file may end
   up on. If not specified for an APK, the API Level is obtained by interpreting
   the minSdkVersion attribute of the APK's AndroidManifest.xml.
-
   codename_to_api_level_map is needed to translate the codename which may be
   encountered as the APK's minSdkVersion.
   """
@@ -915,18 +904,14 @@ COMMON_DOCSTRING = """
   -p  (--path)  <dir>
       Prepend <dir>/bin to the list of places to search for binaries
       run by this script, and expect to find jars in <dir>/framework.
-
   -s  (--device_specific) <file>
       Path to the python module containing device-specific
       releasetools code.
-
   -x  (--extra)  <key=value>
       Add a key/value pair to the 'extras' dict, which device-specific
       extension code may look at.
-
   -v  (--verbose)
       Show command lines being executed.
-
   -h  (--help)
       Display this usage message and exit.
 """
@@ -1033,7 +1018,6 @@ class PasswordManager(object):
     """Get passwords corresponding to each string in 'items',
     returning a dict.  (The dict may have keys in addition to the
     values in 'items'.)
-
     Uses the passwords in $ANDROID_PW_FILE if available, letting the
     user edit that file to add more needed passwords.  If no editor is
     available, or $ANDROID_PW_FILE isn't define, prompts the user
@@ -1169,11 +1153,9 @@ def ZipWrite(zip_file, filename, arcname=None, perms=0o644,
 def ZipWriteStr(zip_file, zinfo_or_arcname, data, perms=None,
                 compress_type=None):
   """Wrap zipfile.writestr() function to work around the zip64 limit.
-
   Even with the ZIP64_LIMIT workaround, it won't allow writing a string
   longer than 2GiB. It gives 'OverflowError: size does not fit in an int'
   when calling crc32(bytes).
-
   But it still works fine to write a shorter string into a large zip file.
   We should use ZipWrite() whenever possible, and only use ZipWriteStr()
   when we know the string won't be too long.
@@ -1508,10 +1490,11 @@ class BlockDifference(object):
     if progress:
       script.ShowProgress(progress, 0)
     self._WriteUpdate(script, output_zip)
+    if OPTIONS.verify:
+      self._WritePostInstallVerifyScript(script)
 
   def WriteStrictVerifyScript(self, script):
     """Verify all the blocks in the care_map, including clobbered blocks.
-
     This differs from the WriteVerifyScript() function: a) it prints different
     error messages; b) it doesn't allow half-way updated images to pass the
     verification."""
@@ -1669,7 +1652,8 @@ class BlockDifference(object):
 
     call = ('block_image_update("{device}", '
             'package_extract_file("{partition}.transfer.list"), '
-            '"{partition}.new.dat", "{partition}.patch.dat");'.format(
+            '"{partition}.new.dat", "{partition}.patch.dat") ||\n'
+            '  abort("E{code}: Failed to update {partition} image.");'.format(
                 device=self.device, partition=self.partition, code=code))
     script.AppendExtra(script.WordWrap(call))
 
@@ -1741,7 +1725,6 @@ def MakeRecoveryPatch(input_dir, output_sink, recovery_img, boot_img,
   should be efficient.)  Add it to the output zip, along with a shell
   script that is run from init.rc on first boot to actually do the
   patching and install the new recovery image.
-
   recovery_img and boot_img should be File objects for the
   corresponding images.  info should be the dictionary returned by
   common.LoadInfoDict() on the input target_files.
@@ -1838,3 +1821,4 @@ fi
   print("putting script in", sh_location)
 
   output_sink(sh_location, sh)
+  

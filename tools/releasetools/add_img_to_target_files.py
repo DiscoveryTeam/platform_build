@@ -68,7 +68,7 @@ def AddSystem(output_zip, prefix="IMAGES/", recovery_img=None, boot_img=None):
 
   prebuilt_path = os.path.join(OPTIONS.input_tmp, prefix, "system.img")
   if os.path.exists(prebuilt_path):
-    print "system.img already exists in %s, no need to rebuild..." % (prefix,)
+    print("system.img already exists in %s, no need to rebuild..." % prefix)
     return prebuilt_path
 
   def output_sink(fn, data):
@@ -101,7 +101,7 @@ def AddSystemOther(output_zip, prefix="IMAGES/"):
 
   prebuilt_path = os.path.join(OPTIONS.input_tmp, prefix, "system_other.img")
   if os.path.exists(prebuilt_path):
-    print "system_other.img already exists in %s, no need to rebuild..." % (prefix,)
+    print("system_other.img already exists in %s, no need to rebuild..." % prefix)
     return
 
   imgname = BuildSystemOther(OPTIONS.input_tmp, OPTIONS.info_dict)
@@ -119,7 +119,7 @@ def AddVendor(output_zip, prefix="IMAGES/"):
 
   prebuilt_path = os.path.join(OPTIONS.input_tmp, prefix, "vendor.img")
   if os.path.exists(prebuilt_path):
-    print "vendor.img already exists in %s, no need to rebuild..." % (prefix,)
+    print("vendor.img already exists in %s, no need to rebuild..." % prefix)
     return prebuilt_path
 
   block_list = common.MakeTempFile(prefix="vendor-blocklist-", suffix=".map")
@@ -141,7 +141,7 @@ def AddOem(output_zip, prefix="IMAGES/"):
 
   prebuilt_path = os.path.join(OPTIONS.input_tmp, prefix, "oem.img")
   if os.path.exists(prebuilt_path):
-    print("oem.img already exists in %s, no need to rebuild..." % (prefix,))
+    print("oem.img already exists in %s, no need to rebuild..." % prefix)
     return
 
   block_list = common.MakeTempFile(prefix="oem-blocklist-", suffix=".map")
@@ -434,9 +434,6 @@ def AddImagesToTargetFiles(filename):
   AddUserdataExtra(output_zip)
   banner("cache")
   AddCache(output_zip)
-  if has_oem:
-    banner("oem")
-    AddOem(output_zip)
 
 
   # For devices using A/B update, copy over images from RADIO/ to IMAGES/ and
