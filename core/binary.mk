@@ -630,7 +630,6 @@ my_generated_sources += $(rs_generated_cpps)
 
 endif
 
-
 ###########################################################
 ## Compile the .proto files to .cc (or .c) and then to .o
 ###########################################################
