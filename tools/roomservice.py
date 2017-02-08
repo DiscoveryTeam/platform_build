@@ -44,9 +44,9 @@ default_manifest = ".repo/manifest.xml"
 
 custom_local_manifest = ".repo/local_manifests/roomservice.xml"
 custom_default_revision = "nougat"
-custom_dependencies = "aosp.dependencies"
-org_manifest = "rro"  # leave empty if org is provided in manifest
-org_display = "AOSP-RRO"  # needed for displaying
+custom_dependencies = "discovery.dependencies"
+org_manifest = "discovery"  # leave empty if org is provided in manifest
+org_display = "Discovery"  # needed for displaying
 
 github_auth = None
 

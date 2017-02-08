@@ -607,7 +607,7 @@ function breakfast()
             if [ -z "$variant" ]; then
                 variant="userdebug"
             fi
-            lunch aosp_$target-$variant
+            lunch discovery_$target-$variant
         fi
     fi
     return $?
