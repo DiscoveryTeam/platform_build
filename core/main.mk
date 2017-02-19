@@ -145,9 +145,6 @@ endif
 # be generated correctly
 include $(BUILD_SYSTEM)/cleanbuild.mk
 
-# Bring in Qualcomm helper macros
-include $(BUILD_SYSTEM)/qcom_utils.mk
-
 # Bring in Mediatek helper macros too
 include $(BUILD_SYSTEM)/mtk_utils.mk
 
@@ -270,9 +267,6 @@ endif
 
 # Bring in standard build system definitions.
 include $(BUILD_SYSTEM)/definitions.mk
-
-# Bring in Qualcomm helper macros
-include $(BUILD_SYSTEM)/qcom_utils.mk
 
 # Bring in dex_preopt.mk
 include $(BUILD_SYSTEM)/dex_preopt.mk
