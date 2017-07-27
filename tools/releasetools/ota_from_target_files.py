@@ -712,6 +712,18 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
     # Stage 3/3: Make changes.
     script.Comment("Stage 3/3")
 
+  #Print ASCII
+  script.Print("  /= = = = = = = = = = = = = = = = = = = = = = = \  ");
+  script.Print(" /= = = = = = = = = = = = = = = = = = = = = = = = \ ");
+  script.Print("||    ____  _                                     ||");
+  script.Print("||   / __ \(_)_____________ _   _____  _______  __||");
+  script.Print("||  / / / / / ___/ ___/ __ \ | / / _ \/ ___/ / / /||");
+  script.Print("|| / /_/ / (__  ) /__/ /_/ / |/ /  __/ /  / /_/ / ||");
+  script.Print("||/_____/_/____/\___/\____/|___/\___/_/   \__, /  ||");
+  script.Print("||                                       /____/   ||");
+  script.Print(" \= = = = = = = = = = = = = = = = = = = = = = = = / ");
+  script.Print("  \= = = = = = = = = = = = = = = = = = = = = = = /  ");
+
   # Dump fingerprints
   script.Print("Target: %s" % CalculateFingerprint(
       oem_props, oem_dict, OPTIONS.info_dict))
