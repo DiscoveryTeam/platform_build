@@ -731,6 +731,7 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
   script.AppendExtra("ifelse(is_mounted(\"/system\"), unmount(\"/system\"));")
   device_specific.FullOTA_InstallBegin()
 
+  script.Print("Restoring backup...");
   if OPTIONS.backuptool:
     if block_based:
       common.ZipWriteStr(output_zip, "system/bin/backuptool.sh",
@@ -738,7 +739,9 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
       common.ZipWriteStr(output_zip, "system/bin/backuptool.functions",
                      ""+input_zip.read("SYSTEM/bin/backuptool.functions"))
     script.Mount("/system")
+    script.Print("Backuptool: Backing up...")
     script.RunBackup("backup")
+    script.Print("Backuptool: Backup done!")
     script.Unmount("/system")
 
   CopyInstallTools(output_zip)
@@ -834,7 +837,9 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
     script.ShowProgress(0.02, 10)
     if block_based:
       script.Mount("/system")
+    script.Print("Backuptool: Restoring backup...")
     script.RunBackup("restore")
+    script.Print("Backuptool: Done!")
     if block_based:
       script.Unmount("/system")
 
