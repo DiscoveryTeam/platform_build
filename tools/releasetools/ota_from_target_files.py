@@ -380,6 +380,15 @@ def AddCompatibilityArchive(target_zip, output_zip, system_included=True,
                     arcname="compatibility.zip",
                     compress_type=zipfile.ZIP_STORED)
 
+def CopyInstallTools(output_zip):
+  oldcwd = os.getcwd()
+  os.chdir(os.getenv('OUT'))
+  for root, subdirs, files in os.walk("install"):
+    for f in files:
+      p = os.path.join(root, f)
+      output_zip.write(p, p)
+  os.chdir(oldcwd)
+
 
 def CopyInstallTools(output_zip):
   oldcwd = os.getcwd()
