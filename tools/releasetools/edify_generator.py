@@ -159,7 +159,9 @@ class EdifyGenerator(object):
     self.script.append(self.WordWrap(cmd))
 
   def RunBackup(self, command):
-    self.script.append(('run_program("/tmp/install/bin/backuptool.sh", "%s");' % command))
+    self.script.append('package_extract_file("system/bin/backuptool.sh", "/tmp/backuptool.sh");')
+    self.script.append('set_perm(0, 0, 0777, "/tmp/backuptool.sh");')
+    self.script.append(('run_program("/tmp/backuptool.sh", "%s");' % command))
 
   def ValidateSignatures(self, command):
     self.script.append('package_extract_file("META-INF/org/discovery/releasekey", "/tmp/releasekey");')
