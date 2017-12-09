@@ -235,7 +235,7 @@ endif
 ## user/userdebug ##
 
 user_variant := $(filter user userdebug,$(TARGET_BUILD_VARIANT))
-enable_target_debugging := true
+enable_target_debugging := false
 tags_to_install :=
 ifneq (,$(user_variant))
   # Target is secure in user builds.
@@ -266,21 +266,10 @@ else # !user_variant
   ADDITIONAL_DEFAULT_PROPERTIES += ro.allow.mock.location=1
 endif # !user_variant
 
-ifeq (true,$(strip $(enable_target_debugging)))
-  # Target is more debuggable and adbd is on by default
-  ADDITIONAL_DEFAULT_PROPERTIES += ro.debuggable=1
-  # Enable Dalvik lock contention logging.
-  #ADDITIONAL_BUILD_PROPERTIES += dalvik.vm.lockprof.threshold=500
-  # Include the debugging/testing OTA keys in this build.
-  INCLUDE_TEST_OTA_KEYS := true
-else # !enable_target_debugging
-  # Target is less debuggable and adbd is off by default
-  ADDITIONAL_DEFAULT_PROPERTIES += ro.debuggable=0
-endif # !enable_target_debugging
-
 ## eng ##
 
 ifeq ($(TARGET_BUILD_VARIANT),eng)
+enable_target_debugging := true
 tags_to_install := debug eng
 ifneq ($(filter ro.setupwizard.mode=ENABLED, $(call collapse-pairs, $(ADDITIONAL_BUILD_PROPERTIES))),)
   # Don't require the setup wizard on eng builds
@@ -293,6 +282,20 @@ ifndef is_sdk_build
   ADDITIONAL_BUILD_PROPERTIES += dalvik.vm.image-dex2oat-filter=verify-at-runtime
 endif
 endif
+
+## debugging ##
+
+ifeq (true,$(strip $(enable_target_debugging)))
+  # Target is more debuggable and adbd is on by default
+  ADDITIONAL_DEFAULT_PROPERTIES += ro.debuggable=1
+  # Enable Dalvik lock contention logging.
+  #ADDITIONAL_BUILD_PROPERTIES += dalvik.vm.lockprof.threshold=500
+  # Include the debugging/testing OTA keys in this build.
+  INCLUDE_TEST_OTA_KEYS := true
+else # !enable_target_debugging
+  # Target is less debuggable and adbd is off by default
+  ADDITIONAL_DEFAULT_PROPERTIES += ro.debuggable=0
+endif # !enable_target_debugging
 
 ## sdk ##
 
