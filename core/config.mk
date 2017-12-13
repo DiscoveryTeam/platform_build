@@ -974,6 +974,6 @@ endif
 ifneq ($(CUSTOM_BUILD),)
 ## We need to be sure the global selinux policies are included
 ## last, to avoid accidental resetting by device configs
-$(eval include vendor/aosp/sepolicy/sepolicy.mk)
+$(eval include vendor/discovery/sepolicy/sepolicy.mk)
 endif
 

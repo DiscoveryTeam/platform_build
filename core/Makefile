@@ -1219,7 +1219,7 @@ endef
 
 define build-recoveryramdisk
   @echo "Generating Changelog"
-  $(hide) ./vendor/aosp/tools/changelog.sh
+  $(hide) ./vendor/discovery/tools/changelog.sh
   $(hide) mv $(PRODUCT_OUT)/Changelog.txt $(PRODUCT_OUT)/$(CUSTOM_VERSION)-Changelog.txt
   @echo ----- Making recovery image ------
   $(hide) mkdir -p $(TARGET_RECOVERY_OUT)

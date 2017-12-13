@@ -130,8 +130,8 @@ function check_product()
         echo "Couldn't locate the top of the tree.  Try setting TOP." >&2
         return
     fi
-    if (echo -n $1 | grep -q -e "^aosp_") ; then
-        CUSTOM_BUILD=$(echo -n $1 | sed -e 's/^aosp_//g')
+    if (echo -n $1 | grep -q -e "^discovery_") ; then
+        CUSTOM_BUILD=$(echo -n $1 | sed -e 's/^discovery_//g')
     else
         CUSTOM_BUILD=
     fi
@@ -600,7 +600,7 @@ function breakfast()
     local variant=$2
     CUSTOM_DEVICES_ONLY="true"
     unset LUNCH_MENU_CHOICES
-    for f in `/bin/ls vendor/aosp/vendorsetup.sh 2> /dev/null`
+    for f in `/bin/ls vendor/discovery/vendorsetup.sh 2> /dev/null`
         do
             echo "including $f"
             . $f

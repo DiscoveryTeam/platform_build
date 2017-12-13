@@ -169,7 +169,7 @@ include $(BUILD_SYSTEM)/product.mk
 include $(BUILD_SYSTEM)/device.mk
 
 ifneq ($(CUSTOM_BUILD),)
-  all_product_configs := $(shell find device -path "*/$(CUSTOM_BUILD)/aosp_$(CUSTOM_BUILD).mk")
+  all_product_configs := $(shell find device -path "*/$(CUSTOM_BUILD)/discovery.mk")
 else
   ifneq ($(strip $(TARGET_BUILD_APPS)),)
   # An unbundled app build needs only the core product makefiles.
