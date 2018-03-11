@@ -975,9 +975,6 @@ include $(TOPDIR)vendor/extras/core/pathmap.mk
 include $(TOPDIR)vendor/extras/core/qcom_target.mk
 endif
 
-ifneq ($(CUSTOM_BUILD),)
 ## We need to be sure the global selinux policies are included
 ## last, to avoid accidental resetting by device configs
 $(eval include vendor/discovery/sepolicy/sepolicy.mk)
-endif
-
