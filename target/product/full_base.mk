@@ -28,7 +28,7 @@ PRODUCT_PACKAGES += \
     LiveWallpapersPicker
 
 # Additional settings used in all AOSP builds
-ifeq ($(wildcard vendor/pixelstyle/google/GoogleAudio.mk),)
+ifeq ($(wildcard vendor/discovery/google/GoogleAudio.mk),)
 PRODUCT_PROPERTY_OVERRIDES := \
     ro.config.ringtone=Ring_Synth_04.ogg \
     ro.config.notification_sound=pixiedust.ogg
@@ -38,7 +38,7 @@ endif
 PRODUCT_LOCALES := en_US
 
 # Get some sounds
-ifeq ($(wildcard vendor/pixelstyle/google/GoogleAudio.mk),)
+ifeq ($(wildcard vendor/discovery/google/GoogleAudio.mk),)
 $(call inherit-product-if-exists, frameworks/base/data/sounds/AllAudio.mk)
 endif
 
