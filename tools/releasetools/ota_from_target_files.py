@@ -821,6 +821,34 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
   script.Print("Target: {}".format(target_info.fingerprint))
 
   script.AppendExtra("ifelse(is_mounted(\"/system\"), unmount(\"/system\"));")
+
+  android_version = target_info.GetBuildProp("ro.build.version.release")
+  discovery_version = target_info.GetBuildProp("ro.discovery.version")
+  discovery_buildtype = target_info.GetBuildProp("ro.discovery.buildtype")
+  build_id = target_info.GetBuildProp("ro.build.id")
+  build_date = target_info.GetBuildProp("ro.mod.build_date")
+  security_patch = target_info.GetBuildProp("ro.build.version.security_patch")
+  device = target_info.GetBuildProp("ro.product.device")
+  
+  script.Print("  /= = = = = = = = = = = = = = = = = = = = = = = \  ");
+  script.Print(" /= = = = = = = = = = = = = = = = = = = = = = = = \ ");
+  script.Print("||    ____  _                                     ||");
+  script.Print("||   / __ \(_)_____________ _   _____  _______  __||");
+  script.Print("||  / / / / / ___/ ___/ __ \ | / / _ \/ ___/ / / /||");
+  script.Print("|| / /_/ / (__  ) /__/ /_/ / |/ /  __/ /  / /_/ / ||");
+  script.Print("||/_____/_/____/\___/\____/|___/\___/_/   \__, /  ||");
+  script.Print("||                                       /____/   ||");
+  script.Print(" \= = = = = = = = = = = = = = = = = = = = = = = = / ");
+  script.Print("  \= = = = = = = = = = = = = = = = = = = = = = = /  ");
+  script.Print("----------------------------------------------------");
+  script.Print(" Android version: %s"%(android_version));
+  script.Print(" Discovery version: %s - %s"%(discovery_version, discovery_buildtype));
+  script.Print(" Build id: %s"%(build_id));
+  script.Print(" Build date: %s"%(build_date));
+  script.Print(" Security patch: %s"%(security_patch));
+  script.Print(" Device: %s"%(device));
+  script.Print("----------------------------------------------");
+  script.Print("----------------------------------------------------");
   device_specific.FullOTA_InstallBegin()
 
   CopyInstallTools(output_zip)
